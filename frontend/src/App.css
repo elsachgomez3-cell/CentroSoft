@@ -1,0 +1,52 @@
+/* ============================================================
+   CENTROSOFT — APP SHELL
+   Estructura raíz: sidebar + contenido principal
+   Solo layout estructural. Estilos visuales en index.css
+   ============================================================ */
+
+/* --- Contenedor principal de la app autenticada --- */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--cs-bg-base);
+}
+
+/* --- Área de contenido (derecha del sidebar) --- */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.25s ease;
+}
+
+/* --- Área scrolleable debajo del navbar --- */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: var(--navbar-height);
+}
+
+/* --- Sidebar colapsado (clase togglable) --- */
+.app-shell.sidebar-collapsed .app-main {
+  margin-left: var(--sidebar-collapsed);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* Tablet: sidebar solo iconos */
+@media (max-width: 1023px) {
+  .app-main {
+    margin-left: var(--sidebar-collapsed);
+  }
+}
+
+/* Mobile: sidebar como drawer, contenido ocupa todo */
+@media (max-width: 767px) {
+  .app-main {
+    margin-left: 0;
+  }
+}
