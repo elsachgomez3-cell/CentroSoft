@@ -7,10 +7,16 @@ const router = Router();
 router.use(authenticate);
 
 // ─── Rutas de LECTURA con acceso multi-rol (antes del authorize general) ───
-router.get('/horarios',       authorize(['admin', 'paciente', 'recepcionista', 'medico', 'auxiliar']), adminController.getHorarios);
-router.get('/personal',       authorize(['admin', 'gerente']),                                         adminController.getPersonal);
-router.get('/especialidades', authorize(['admin', 'paciente', 'recepcionista', 'medico', 'gerente']), adminController.getEspecialidades);
+router.get('/horarios',       authorize(['admin', 'paciente', 'recepcionista', 'medico', 'auxiliar', 'enfermera']), adminController.getHorarios);
+router.get('/personal',       authorize(['admin', 'gerente', 'recepcionista']),                       adminController.getPersonal);
+router.get('/especialidades', authorize(['admin', 'paciente', 'recepcionista', 'medico', 'gerente', 'auxiliar', 'enfermera']), adminController.getEspecialidades);
 router.get('/roles',          authorize(['admin']),                                                    adminController.getRoles);
+
+// ─── Horarios — escritura (admin y recepcionista) ────────────
+// Recepcionista puede crear, editar y eliminar horarios igual que admin.
+router.post("/horarios",       authorize(['admin', 'recepcionista']), adminController.createHorario);
+router.put("/horarios/:id",    authorize(['admin', 'recepcionista']), adminController.updateHorario);
+router.delete("/horarios/:id", authorize(['admin', 'recepcionista']), adminController.deleteHorario);
 
 // ─── A partir de aquí todo requiere ser admin ──────────────
 router.use(authorize(['admin']));
@@ -31,11 +37,5 @@ router.delete("/pacientes/:id", adminController.deletePaciente);
 router.post("/especialidades",       adminController.createEspecialidad);
 router.put("/especialidades/:id",    adminController.updateEspecialidad);
 router.delete("/especialidades/:id", adminController.deleteEspecialidad);
-
-// ─── Horarios ──────────────────────────────────────────────
-// GET ya definido arriba — solo POST, PUT, DELETE aquí
-router.post("/horarios",       adminController.createHorario);
-router.put("/horarios/:id",    adminController.updateHorario);
-router.delete("/horarios/:id", adminController.deleteHorario);
 
 export default router;

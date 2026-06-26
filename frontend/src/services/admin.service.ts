@@ -147,11 +147,14 @@ export const marcarMensajeLeidoService = async (id: number): Promise<void> => {
 // ─── CITAS ADMIN ─────────────────────────────────────────────
 export interface CitaAdmin {
   id_cita: number;
+  id_horario: number;
+  id_paciente: number;
   fecha: string;
   hora: string;
   estado: string;
   motivo: string | null;
   paciente: string;
+  paciente_ci: string | null;
   medico: string;
   especialidad: string;
 }

@@ -36,7 +36,7 @@ export const crearCita = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const { id_horario, fecha, hora, motivo } = req.body;
+    const { id_horario, fecha, hora, motivo, id_paciente: id_paciente_body } = req.body;
 
     if (!id_horario || !fecha || !hora) {
       res.status(400).json({
@@ -45,18 +45,29 @@ export const crearCita = async (
       return;
     }
 
-    // Obtener id_paciente del usuario autenticado
-    const pacienteResult = await pool.query(
-      `SELECT id_paciente FROM Paciente WHERE id_usuario = $1`,
-      [req.usuario!.id_usuario],
-    );
+    let id_paciente: number;
 
-    if (pacienteResult.rows.length === 0) {
-      res.status(400).json({ error: "No se encontró el paciente" });
-      return;
+    if (req.usuario!.rol === "recepcionista") {
+      if (!id_paciente_body) {
+        res.status(400).json({
+          error: "Se requiere id_paciente para agendar en nombre de un paciente",
+        });
+        return;
+      }
+      id_paciente = id_paciente_body;
+    } else {
+      const pacienteResult = await pool.query(
+        `SELECT id_paciente FROM Paciente WHERE id_usuario = $1`,
+        [req.usuario!.id_usuario],
+      );
+
+      if (pacienteResult.rows.length === 0) {
+        res.status(400).json({ error: "No se encontró el paciente" });
+        return;
+      }
+
+      id_paciente = pacienteResult.rows[0].id_paciente;
     }
-
-    const id_paciente = pacienteResult.rows[0].id_paciente;
 
     const cita = await citaRepo.createCita({
       id_paciente,

@@ -14,6 +14,7 @@ import contactoRoutes from './routes/contacto.routes'
 import dashboardRoutes from './routes/dashboard.routes'
 import auditoriaRoutes from './routes/auditoria.routes'
 import gerenteRoutes from './routes/gerente.routes';
+import pacienteRoutes from './routes/paciente.routes';
 
 dotenv.config();
 
@@ -33,7 +34,7 @@ app.use('/contacto', contactoRoutes)
 app.use('/dashboard', dashboardRoutes)
 app.use('/auditoria', auditoriaRoutes)
 app.use('/gerente', gerenteRoutes);
-
+app.use('/pacientes', pacienteRoutes);
 // ─── Health check ───────────────────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({

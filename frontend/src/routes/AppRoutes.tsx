@@ -10,6 +10,9 @@ import AdminDashboard    from '../pages/admin/AdminDashboard'
 import PacienteDashboard from '../pages/paciente/PacienteDashboard'
 import MedicoDashboard   from '../pages/medico/MedicoDashboard'
 import GerenteDashboard  from '../pages/gerente/GerenteDashboard'
+import RecepcionistaDashboard from '../pages/recepcionista/RecepcionistaDashboard'
+import EnfermeraDashboard from '../pages/enfermera/EnfermeraDashboard'
+import AuxiliarDashboard from '../pages/auxiliar/AuxiliarDashboard'
 
 // Página de acceso denegado
 import SinAcceso from '../pages/auth/SinAcceso'
@@ -48,6 +51,24 @@ const AppRoutes = () => {
       <Route path="/gerente/*" element={
         <ProtectedRoute rolesPermitidos={['gerente']}>
           <GerenteDashboard />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/recepcionista/*" element={
+        <ProtectedRoute rolesPermitidos={['recepcionista']}>
+          <RecepcionistaDashboard />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/enfermera/*" element={
+        <ProtectedRoute rolesPermitidos={['enfermera']}>
+          <EnfermeraDashboard />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/auxiliar/*" element={
+        <ProtectedRoute rolesPermitidos={['auxiliar']}>
+          <AuxiliarDashboard />
         </ProtectedRoute>
       } />
 

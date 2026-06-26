@@ -63,12 +63,12 @@ router.put(
 // ─── Cambiar estado ──────────────────────────────────────────
 router.patch(
   "/:id/estado",
-  authorize(["medico", "recepcionista", "admin", "paciente"]),
+  authorize(["medico", "recepcionista", "admin", "paciente", "enfermera"]),
   citaController.cambiarEstado,
 );
 
 // Todas las citas — solo admin
-router.get("/todas", authorize(["admin"]), citaController.getAllCitas);
+router.get("/todas", authorize(["admin", "recepcionista"]), citaController.getAllCitas);
 // Resumen mensual para calendario del médico
 router.get('/resumen-mensual',
   authorize(['medico']),

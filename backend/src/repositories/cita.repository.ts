@@ -19,6 +19,7 @@ export const findCitasHoy = async () => {
       pac.primer_nombre || ' ' || pac.apellido_pat AS paciente,
       pac.ci            AS paciente_ci,
       pac.telefono      AS paciente_telefono,
+      DATE_PART('year', AGE(pac.fecha_nac))::INT AS paciente_edad,
       per.primer_nombre || ' ' || per.apellido_pat AS medico,
       e.nombre          AS especialidad
     FROM Cita c
@@ -488,12 +489,15 @@ export const findAllCitas = async (filtros: {
     `
     SELECT
       c.id_cita,
+      c.id_horario,
+      c.id_paciente,
       c.fecha,
       c.hora,
       c.estado,
       c.motivo,
       c.motivo_cancelacion,
       pac.primer_nombre || ' ' || pac.apellido_pat AS paciente,
+      pac.ci AS paciente_ci,
       per.primer_nombre || ' ' || per.apellido_pat AS medico,
       e.nombre AS especialidad
     FROM Cita c
