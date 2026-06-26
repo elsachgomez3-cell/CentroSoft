@@ -12,6 +12,12 @@ const pool = new Pool({
   database: process.env.DB_NAME     || 'centrosoft',
   user:     process.env.DB_USER     || 'postgres',
   password: process.env.DB_PASSWORD || '',
+  // Neon (y la mayoría de proveedores en la nube) exigen SSL.
+  // En local normalmente no se usa, así que se activa solo si
+  // DB_SSL=true está definido en el .env / variables de entorno.
+  ssl: process.env.DB_SSL === 'true'
+    ? { rejectUnauthorized: false }
+    : false,
 });
 
 // Función que verifica la conexión al iniciar el servidor.

@@ -4,7 +4,7 @@
 -- Versión 2.0
 -- ============================================================
 
-CREATE DATABASE centrosoft;
+-- CREATE DATABASE centrosoft;
 -- 2. Conectarse a ella:
 --    \c centrosoft
 -- 3. Ejecutar este archivo:
