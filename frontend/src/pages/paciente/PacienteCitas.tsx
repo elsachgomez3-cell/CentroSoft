@@ -36,10 +36,10 @@ const formatFecha = (fecha: string) => {
 };
 
 const BADGE_ESTADO: Record<string, { bg: string; color: string; label: string }> = {
-  programada:  { bg: "#E0F7FC", color: "#0B85A3", label: "Programada"  },
-  en_espera:   { bg: "#FFF8E1", color: "#F57F17", label: "En espera"   },
-  atendida:    { bg: "#E8F5E9", color: "#2E7D32", label: "Atendida"    },
-  cancelada:   { bg: "#FFEBEE", color: "#C62828", label: "Cancelada"   },
+  programada: { bg: "#E0F7FC", color: "#0B85A3", label: "Programada" },
+  en_espera: { bg: "#FFF8E1", color: "#F57F17", label: "En espera" },
+  atendida: { bg: "#E8F5E9", color: "#2E7D32", label: "Atendida" },
+  cancelada: { bg: "#FFEBEE", color: "#C62828", label: "Cancelada" },
   inasistente: { bg: "#F0F4F8", color: "#4A6275", label: "Inasistente" },
 };
 
@@ -90,7 +90,7 @@ const CsInput = (props: React.InputHTMLAttributes<HTMLInputElement>) => {
         ...(props.style as React.CSSProperties),
       }}
       onFocus={e => { if (!props.disabled) setFocused(true); props.onFocus?.(e); }}
-      onBlur={e  => { setFocused(false); props.onBlur?.(e); }}
+      onBlur={e => { setFocused(false); props.onBlur?.(e); }}
     />
   );
 };
@@ -111,8 +111,8 @@ const CsSelect = (props: React.SelectHTMLAttributes<HTMLSelectElement>) => {
         transition: "border-color 0.2s, box-shadow 0.2s",
         cursor: props.disabled ? "not-allowed" : "pointer",
       }}
-      onFocus={e => { setFocused(true);  props.onFocus?.(e); }}
-      onBlur={e  => { setFocused(false); props.onBlur?.(e); }}
+      onFocus={e => { setFocused(true); props.onFocus?.(e); }}
+      onBlur={e => { setFocused(false); props.onBlur?.(e); }}
     />
   );
 };
@@ -134,10 +134,10 @@ const Alerta = ({
   onRetry?: () => void;
 }) => {
   const map = {
-    danger:  { bg: "#FFEBEE", color: "#C62828", border: "#C62828", Icon: HiOutlineExclamationCircle },
-    success: { bg: "#E8F5E9", color: "#2E7D32", border: "#2E7D32", Icon: HiOutlineCheckCircle      },
+    danger: { bg: "#FFEBEE", color: "#C62828", border: "#C62828", Icon: HiOutlineExclamationCircle },
+    success: { bg: "#E8F5E9", color: "#2E7D32", border: "#2E7D32", Icon: HiOutlineCheckCircle },
     warning: { bg: "#FFF8E1", color: "#F57F17", border: "#F57F17", Icon: HiOutlineExclamationCircle },
-    info:    { bg: "#E0F7FC", color: "#0B85A3", border: "#0B85A3", Icon: HiOutlineInformationCircle },
+    info: { bg: "#E0F7FC", color: "#0B85A3", border: "#0B85A3", Icon: HiOutlineInformationCircle },
   };
   const s = map[tipo];
   return (
@@ -417,15 +417,17 @@ const PacienteCitas = () => {
     }
     setCargando(true);
     try {
-      const citasConHorario = await fetch(
-        `http://localhost:3000/citas/mis-citas-programadas`,
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } },
-      ).then((r) => r.json());
+      const citasConHorario = (await getMisCitasProgramadasService()) as any[];
       const citaConHorario = citasConHorario.find(
-        (c: any) => c.id_cita === citaSeleccionada.id_cita,
+        (c) => c.id_cita === citaSeleccionada.id_cita,
       );
+      if (!citaConHorario?.id_horario) {
+        setError("No se pudo identificar el horario de la cita");
+        setCargando(false);
+        return;
+      }
       await reprogramarCitaService(citaSeleccionada.id_cita, {
-        id_horario: citaConHorario?.id_horario || 1,
+        id_horario: citaConHorario.id_horario,
         fecha: nuevaFecha,
         hora: nuevaHora,
         motivo_cambio: "Reprogramación solicitada por paciente",
@@ -472,10 +474,10 @@ const PacienteCitas = () => {
   // ── Definición de tabs ─────────────────────────────────────────────────
 
   const TABS = [
-    { key: "agendar",     label: "Nueva cita",   Icon: HiOutlinePlus       },
+    { key: "agendar", label: "Nueva cita", Icon: HiOutlinePlus },
     { key: "programadas", label: `Mis citas (${citasProgramadas.length})`, Icon: HiOutlineCalendar },
-    { key: "reprogramar", label: "Reprogramar",  Icon: HiOutlineRefresh    },
-    { key: "cancelar",    label: "Cancelar",     Icon: HiOutlineBan        },
+    { key: "reprogramar", label: "Reprogramar", Icon: HiOutlineRefresh },
+    { key: "cancelar", label: "Cancelar", Icon: HiOutlineBan },
   ] as const;
 
   // ── Render slots (reutilizable para agendar y reprogramar) ─────────────
@@ -500,14 +502,13 @@ const PacienteCitas = () => {
               width: "100px",
               padding: "10px 8px",
               borderRadius: "10px",
-              border: `1.5px solid ${
-                isSelected ? accentColor : s.disponible ? "#D1E3EE" : "#EEF4F8"
-              }`,
+              border: `1.5px solid ${isSelected ? accentColor : s.disponible ? "#D1E3EE" : "#EEF4F8"
+                }`,
               backgroundColor: isSelected
                 ? accentColor
                 : s.disponible
-                ? "#FFFFFF"
-                : "#F8FBFD",
+                  ? "#FFFFFF"
+                  : "#F8FBFD",
               color: isSelected ? "#FFFFFF" : s.disponible ? "#1A2B3C" : "#C4D4DF",
               cursor: s.disponible ? "pointer" : "not-allowed",
               display: "flex",
@@ -810,7 +811,7 @@ const PacienteCitas = () => {
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                           if (sel) { setCitaSeleccionada(null); setNuevaFecha(""); setNuevosSlots([]); setNuevaHora(""); }
-                          else     { setCitaSeleccionada(c);    setNuevaFecha(""); setNuevosSlots([]); setNuevaHora(""); }
+                          else { setCitaSeleccionada(c); setNuevaFecha(""); setNuevosSlots([]); setNuevaHora(""); }
                         }}
                       >
                         <td style={{ ...tdStyle, width: "40px" }}>
@@ -932,7 +933,7 @@ const PacienteCitas = () => {
                         style={{ cursor: "pointer" }}
                         onClick={() => {
                           if (sel) { setCitaSeleccionada(null); setMotivoCancelacion(""); }
-                          else     { setCitaSeleccionada(c);    setMotivoCancelacion(""); }
+                          else { setCitaSeleccionada(c); setMotivoCancelacion(""); }
                         }}
                       >
                         <td style={{ ...tdStyle, width: "40px" }}>

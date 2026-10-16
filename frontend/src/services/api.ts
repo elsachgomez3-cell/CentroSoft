@@ -1,8 +1,10 @@
 import axios from 'axios'
 
-// URL base del backend
+// URL base del backend.
+// En Render se toma de la variable VITE_API_URL.
+// En tu PC, si la variable no existe, usa localhost.
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
   headers: {
     'Content-Type': 'application/json'
   }
